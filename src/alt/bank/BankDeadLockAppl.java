@@ -5,14 +5,14 @@ import alt.bank.service.Transfer;
 
 public class BankDeadLockAppl {
     public static void main(String[] args) throws InterruptedException {
-        Account mother = new Account(9999);
-        Account daughter = new Account(14999);
+        Account mother = new Account(5000);
+        Account daughter = new Account(4000);
 
-        mother.debit(1001);
-        daughter.debit(1001);
+        mother.debit(1000);
+        daughter.debit(500);
 
-        Transfer transfer1 = new Transfer(mother, daughter, 900);
-        Transfer transfer2 = new Transfer(daughter, mother, 900);
+        Transfer transfer1 = new Transfer(mother, daughter, 1000);
+        Transfer transfer2 = new Transfer(daughter, mother, 500);
 
         Thread thread1 = new Thread(transfer1);
         Thread thread2 = new Thread(transfer2);
@@ -20,8 +20,20 @@ public class BankDeadLockAppl {
         thread2.start();
         thread1.join();
         thread2.join();
-        System.out.println("Balance of account: " + mother.getAccountNumber() + " = " + mother.getBalance());
-        System.out.println("Balance of account: " + daughter.getAccountNumber() + " = " + daughter.getBalance());
 
+
+        mother.lock();
+        try {
+            System.out.println("Balance of mother's account: " + mother.getAccountNumber() + " = " + daughter.getBalance());
+        } finally {
+            mother.unlock();
+        }
+
+        daughter.lock();
+        try {
+            System.out.println("Balance of daughter's account: " + daughter.getAccountNumber() + " = " + mother.getBalance());
+        } finally {
+            daughter.unlock();
+        }
     }
 }

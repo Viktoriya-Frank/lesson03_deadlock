@@ -1,10 +1,12 @@
 package alt.bank.model;
 
 import java.util.Objects;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Account {
     private int accountNumber;
     private int balance;
+    private final ReentrantLock lock = new ReentrantLock();
 
     public Account(int accountNumber) {
         this.accountNumber = accountNumber;
@@ -25,9 +27,13 @@ public class Account {
     public void credit(int sum) {
         balance = balance - sum;
     }
+    public void lock() {
+        lock.lock();
+    }
 
-
-
+    public void unlock() {
+        lock.unlock();
+    }
 
     @Override
     public boolean equals(Object o) {
