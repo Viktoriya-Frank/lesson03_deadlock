@@ -5,14 +5,14 @@ import alt.bank.service.Transfer;
 
 public class BankDeadLockAppl {
     public static void main(String[] args) throws InterruptedException {
-        Account mother = new Account(5000);
-        Account daughter = new Account(4000);
+        Account mother = new Account(12345);
+        Account daughter = new Account(12346);
 
         mother.debit(1000);
-        daughter.debit(500);
+        daughter.debit(2000);
 
-        Transfer transfer1 = new Transfer(mother, daughter, 1000);
-        Transfer transfer2 = new Transfer(daughter, mother, 500);
+        Transfer transfer1 = new Transfer(mother, daughter, 100);
+        Transfer transfer2 = new Transfer(daughter, mother, 1000);
 
         Thread thread1 = new Thread(transfer1);
         Thread thread2 = new Thread(transfer2);
